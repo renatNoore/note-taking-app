@@ -1,0 +1,7 @@
+streamlit==1.36.0
+watchdog==4.0.1
+markdown==3.6
+networkx==3.3
+pyvis==0.3.2
+python-frontmatter==1.0.1
+PyYAML==6.0.2
