@@ -1,38 +1,30 @@
-# Notes Graph App (Obsidian-like)
+# Todoist-like Task App (Flask + SQLite)
 
-Local-first markdown notes with wiki-links `[[Note Title]]`, frontmatter, and a graph view.
+A simple, local-first task manager inspired by Todoist. Supports projects, labels, priorities, due dates, quick-add parsing, and an HTMX-powered UI for fast interactions.
 
 ## Features
-- Markdown notes in a folder
-- Wiki-links `[[like this]]`
-- Backlinks panel
-- Tag parsing from YAML frontmatter (`tags: [a, b]`)
-- Interactive graph view of notes
-- Full-text search
+- Projects (default Inbox)
+- Labels (`@label`)
+- Priorities (`p1`..`p4`)
+- Due dates ("today", "tomorrow", weekdays, or `YYYY-MM-DD`)
+- Quick-add parsing from a single input (e.g. `Pay bills today #Finance @money p2`)
+- Complete, edit, delete
+- Search and filtering by project/label
+- No accounts, local SQLite database
 
 ## Quickstart
-1. Create and activate a virtualenv (optional)
-2. Install deps:
+1. (Recommended) Create a virtualenv and activate it
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 3. Run the app:
    ```bash
-   streamlit run app/main.py
+   python -m flask --app todoist_app.app run --debug
    ```
-4. By default it loads notes from `notes/`. Change in the left sidebar.
+   Then open `http://127.0.0.1:5000`.
 
-## Notes Format
-- Files end with `.md`
-- Use `[[Wiki Link]]` to link notes by title (file stem). If a note does not exist yet, it will be shown as a dashed node in the graph.
-- YAML frontmatter is supported at the top:
-  ```yaml
-  ---
-  title: Optional custom title
-  tags: [personal, idea]
-  ---
-  ```
-
-## Dev
-- Hot-reloads on file changes
-- Python 3.10+
+## Notes
+- The database is created automatically at first run in `instance/todo.db`.
+- The default project is `Inbox`.
+- Example quick-add: `Email Alice tomorrow @work #Comms p2`.
