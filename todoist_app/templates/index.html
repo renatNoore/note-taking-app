@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+<div class="row">
+  <aside class="col-12 col-md-3 col-lg-2 mb-3">
+    <div class="card mb-3">
+      <div class="card-header">Projects</div>
+      <ul class="list-group list-group-flush">
+        {% for p in projects %}
+        <li class="list-group-item d-flex justify-content-between align-items-center {% if current_project and current_project|lower == p.name|lower %}active{% endif %}">
+          <a class="stretched-link {% if current_project and current_project|lower == p.name|lower %}text-white{% endif %}" href="{{ url_for('index', project=p.name) }}">{{ p.name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-header">Labels</div>
+      <ul class="list-group list-group-flush">
+        {% for l in labels %}
+        <li class="list-group-item d-flex justify-content-between align-items-center {% if current_label and current_label|lower == l.name|lower %}active{% endif %}">
+          <a class="stretched-link {% if current_label and current_label|lower == l.name|lower %}text-white{% endif %}" href="{{ url_for('index', label=l.name) }}">@{{ l.name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="1" id="completedCheck" {% if show_completed %}checked{% endif %}
+             hx-get="{{ url_for('index', project=current_project, label=current_label, q=q, completed=0 if show_completed else 1) }}"
+             hx-target="#task-list" hx-swap="outerHTML">
+      <label class="form-check-label" for="completedCheck">
+        Show completed
+      </label>
+    </div>
+  </aside>
+
+  <main class="col-12 col-md-9 col-lg-10">
+    <form class="mb-3" method="post" action="{{ url_for('create_task', project=current_project, label=current_label, q=q, completed=1 if show_completed else 0) }}" hx-post="{{ url_for('create_task', project=current_project, label=current_label, q=q, completed=1 if show_completed else 0) }}" hx-target="#task-list" hx-swap="outerHTML">
+      <input class="form-control form-control-lg" type="text" name="quick_add" placeholder="Quick add: Buy milk tomorrow #Groceries @home p2" autocomplete="off">
+    </form>
+
+    {% include '_task_list.html' %}
+  </main>
+</div>
+{% endblock %}

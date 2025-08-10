@@ -1,0 +1,22 @@
+<div id="task-list">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th style="width: 40px;"></th>
+        <th>Task</th>
+        <th style="width: 140px;">Due</th>
+        <th style="width: 120px;">Priority</th>
+        <th style="width: 160px;">Project</th>
+        <th style="width: 160px;">Labels</th>
+        <th style="width: 120px;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+        {% include '_task_row.html' %}
+      {% else %}
+        <tr><td colspan="7" class="text-muted">No tasks</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

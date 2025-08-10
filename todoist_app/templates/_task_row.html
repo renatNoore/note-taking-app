@@ -1,0 +1,72 @@
+{% if edit_mode %}
+<tr>
+  <td></td>
+  <td colspan="5">
+    <form hx-post="{{ url_for('update_task', task_id=task.id) }}" hx-target="closest tr" hx-swap="outerHTML">
+      <div class="row g-2 align-items-center">
+        <div class="col-12 col-lg-6">
+          <input type="text" name="content" class="form-control" value="{{ task.content }}" />
+        </div>
+        <div class="col-6 col-lg-2">
+          <input type="date" name="due" class="form-control" value="{{ task.due_date }}" />
+        </div>
+        <div class="col-6 col-lg-2">
+          <select name="priority" class="form-select">
+            {% for p in [1,2,3,4] %}
+              <option value="{{ p }}" {% if task.priority == p %}selected{% endif %}>p{{ p }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-lg-2">
+          <input type="text" name="project" class="form-control" value="{{ task.project.name }}" list="project-list" />
+          <datalist id="project-list">
+            {% for p in projects %}
+              <option value="{{ p.name }}"></option>
+            {% endfor %}
+          </datalist>
+        </div>
+        <div class="col-12">
+          <input type="text" name="labels" class="form-control" placeholder="Comma-separated labels" value="{{ ', '.join(l.name for l in task.labels) }}" />
+        </div>
+      </div>
+      <div class="mt-2">
+        <button class="btn btn-sm btn-primary" type="submit">Save</button>
+        <a class="btn btn-sm btn-outline-secondary" hx-get="{{ url_for('edit_task', task_id=task.id) }}" hx-target="closest tr" hx-swap="outerHTML">Cancel</a>
+      </div>
+    </form>
+  </td>
+  <td></td>
+</tr>
+{% else %}
+<tr class="{% if task.completed %}table-light text-muted{% endif %}">
+  <td>
+    <input class="form-check-input" type="checkbox" {% if task.completed %}checked{% endif %}
+           hx-post="{{ url_for('toggle_task', task_id=task.id) }}" hx-target="closest tr" hx-swap="outerHTML">
+  </td>
+  <td>
+    <div class="fw-semibold">{{ task.content }}</div>
+    <div class="small text-muted">
+      {% if task.project %}<span class="me-2">#{{ task.project.name }}</span>{% endif %}
+      {% for l in task.labels %}<span class="badge bg-secondary me-1">@{{ l.name }}</span>{% endfor %}
+    </div>
+  </td>
+  <td>
+    {% if task.due_date %}
+      <span class="badge {% if task.due_date < (now().date()) and not task.completed %}bg-danger{% else %}bg-info{% endif %}">{{ task.due_date }}</span>
+    {% endif %}
+  </td>
+  <td>
+    <span class="badge {% if task.priority>=3 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">p{{ task.priority }}</span>
+  </td>
+  <td>{{ task.project.name if task.project else '' }}</td>
+  <td>
+    {% for l in task.labels %}
+      <span class="badge bg-light text-dark border me-1">@{{ l.name }}</span>
+    {% endfor %}
+  </td>
+  <td class="text-end">
+    <a class="btn btn-sm btn-outline-secondary" hx-get="{{ url_for('edit_task', task_id=task.id) }}" hx-target="closest tr" hx-swap="outerHTML">Edit</a>
+    <button class="btn btn-sm btn-outline-danger" hx-post="{{ url_for('delete_task', task_id=task.id) }}" hx-target="closest tr" hx-swap="outerHTML">Delete</button>
+  </td>
+</tr>
+{% endif %}
